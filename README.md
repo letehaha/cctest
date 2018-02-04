@@ -22,3 +22,5 @@ For successful start this project you need to:
 Now, application is running on ```http://localhost:8080```
 
 For login in application you can enter a default user data (```login: test, password: test```) or create a new user.
+___
+At the moment, you can't add/remove events from calendar. Also, you can't to export data in JSON. This will be added soon.
