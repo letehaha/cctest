@@ -21,4 +21,4 @@ For successful start this project you need to:
 
 Now, application is running on ```http://localhost:8080```
 
-For login in application you can enter a default user data (login: test, passowrd: test) or create a new user.
+For login in application you can enter a default user data (```login: test, password: test```) or create a new user.
