@@ -83,10 +83,10 @@ export default {
         let events = this.events.filter(el => el.start <= i && el.start + el.duration - 1 >= i)
         if (events.length > 1) {
           for (var j = 0; j < events.length; j++) {
-            let elEvent = events.find(el => el.id === events[j].id)
+            let elEvent = eventsMap.find(el => el.id === events[j].id)
             if (!elEvent || elEvent.width > 1 / events.length) {
-              eventsMap = eventsMap.filter(l => l.id !== events[j].id)
-              eventsMap.push({ id: events[j].id, width: 1 / events.length, start: events[j].start, duration: events[j].duration })
+              eventsMap = eventsMap.filter(el => el.id !== events[j].id)
+              eventsMap.push({ id: events[j].id, order: j, width: 1 / events.length })
             }
           }
         }

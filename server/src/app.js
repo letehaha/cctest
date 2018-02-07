@@ -13,6 +13,7 @@ var mongoose = require('mongoose');
 // models
 
 User = require('./models/user');
+_Event = require('./models/event');
 
 mongoose.connect(dbConfig.url, {});
 
@@ -29,15 +30,10 @@ app.use(cors());
 
 app.get('/calendar', (req, res) => {
   res.send([
-    { id: 0, start: 0, duration: 15, title: 'Lorem ipsum dolor sit amet.', left: '0' }, // full
-    { id: 1, start: 25, duration: 30, title: 'Lorem, ipsum.', left: '1' }, // left
-    { id: 2, start: 30, duration: 30, title: 'Lorem ipsum dolor sit.', left: '2' }, // right
-    { id: 3, start: 60, duration: 15, title: 'Lorem.', left: '0' },
-    { id: 4, start: 100, duration: 15, title: 'Lorem ipsum dolor sit amet, consectetur adipisicing.', left: '0' },
-    { id: 5, start: 180, duration: 90, title: 'Lorem ipsum dolor sit amet, consectetur.', left: '0' },
-    { id: 6, start: 360, duration: 30, title: 'Lorem, ipsum.', left: '1' },
-    { id: 7, start: 370, duration: 45, title: 'Lorem, ipsum.', left: '2' },
-    { id: 8, start: 405, duration: 30, title: 'Lorem ipsum dolor sit.', left: '1' }
+    { id: 0, start: 0, duration: 15, title: 'Lorem ipsum dolor sit amet.' },
+    { id: 1, start: 25, duration: 30, title: 'Lorem, ipsum.' },
+    { id: 2, start: 30, duration: 30, title: 'Lorem ipsum dolor sit.' },
+    { id: 3, start: 40, duration: 30, title: 'Lorem ipsum dolor sit.' }
   ]);
 });
 
