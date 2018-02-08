@@ -2,6 +2,7 @@
   section
     .calendar
       .calendar__intro
+        add-event
         .container.calendar__intro-wrapper
           h1.calendar__title
             | Calendar
@@ -14,6 +15,13 @@
               | Выйти
 
       .container
+        .calendar__actions
+          .calendar__action
+            button.calendar__action-btn.calendar__action-btn-add(type='button', @click='addEvent') Add
+
+          .calendar__action
+            button.calendar__action-btn.calendar__action-btn-export(type='button') Export
+
         .calendar__area
           .calendar__datetable
             .calendar__datetime(
@@ -23,33 +31,30 @@
 
           .calendar__events
             .calendar__events-item(
-              v-for='(event, index) in mutatedEvents',
-              v-bind:style="{ top: event.start + 'px', height: event.duration + 'px' }"
+              v-for='(event, index) in eventsMap',
+              v-bind:style=`{
+                top: event.start + 'px',
+                height: event.duration + 'px',
+                left: event.width * event.position * 100 + '%',
+                width: event.width * 100 + '%'
+              }`,
+              :data-title='event.title'
             )
-              template(v-if="mutatedEvents[index].left === '1'")
-                .calendar__events-item-background(v-bind:style="{ left: '0', width: '50%' }")
-                  .calendar__events-item-title {{ event.title }}
-
-              template(v-else-if="mutatedEvents[index].left === '2'")
-                .calendar__events-item-background(v-bind:style="{ width: '50%', marginLeft: '100px' }")
-                  .calendar__events-item-title {{ event.title }}
-
-              template(v-else)
-                .calendar__events-item-background
-                  .calendar__events-item-title {{ event.title }}
+              .calendar__events-item-background
+                .calendar__events-item-title {{ event.title }}
 
 </template>
 
 <script>
 import axios from 'axios'
+import addEvent from './AddEvent'
+
 export default {
   name: 'calendar',
+  components: { addEvent },
   data () {
     return {
-      events: [],
-      mutatedEvents: [],
       timeStamps: [],
-      relative_value: 48 / 30,
       interval: {
         am: {
           start: 8,
@@ -68,6 +73,13 @@ export default {
     }
   },
   mounted () {
+    axios.post(`http://localhost:8081/calendar`, { username: this.currentUser })
+      .then(response => {
+        this.$store.dispatch('updateEventsMap', response.data)
+      })
+      .catch(e => {
+        console.error(e)
+      })
     this.createTimeStamps()
   },
   computed: {
@@ -77,40 +89,9 @@ export default {
     currentUser: function () {
       return localStorage.getItem('currentUser')
     },
-    besideElements: function () {
-      let eventsMap = []
-      for (var i = 0; i < this.fullTime; i++) {
-        let events = this.events.filter(el => el.start <= i && el.start + el.duration - 1 >= i)
-        if (events.length > 1) {
-          for (var j = 0; j < events.length; j++) {
-            let elEvent = eventsMap.find(el => el.id === events[j].id)
-            if (!elEvent || elEvent.width > 1 / events.length) {
-              eventsMap = eventsMap.filter(el => el.id !== events[j].id)
-              eventsMap.push({ id: events[j].id, order: j, width: 1 / events.length })
-            }
-          }
-        }
-      }
-      return eventsMap
+    eventsMap: function () {
+      return this.$store.state.events.besideElements
     }
-  },
-  created () {
-    axios.get(`http://localhost:8081/calendar`)
-      .then(response => {
-        this.events = response.data
-        this.events.map((item, index) => {
-          this.mutatedEvents.push({
-            'id': item.id,
-            'start': item.start * this.relative_value,
-            'duration': item.duration * this.relative_value,
-            'title': item.title,
-            'left': item.left
-          })
-        })
-      })
-      .catch(e => {
-        this.errors.push(e)
-      })
   },
   methods: {
     createTimeStamps () {
@@ -134,6 +115,8 @@ export default {
       localStorage.removeItem('userIsAuthorized')
       localStorage.removeItem('currentUser')
       this.$router.push('/login')
+    },
+    addEvent () {
     }
   }
 }
@@ -156,6 +139,28 @@ export default {
     margin-top: 10px
     margin-left: auto
     display: block
+
+  .calendar__actions
+    margin-top: 20px
+    display: flex
+
+  .calendar__action
+    &:not(:last-child)
+      margin-right: 15px
+
+  .calendar__action-btn
+    width: 70px
+    padding: 4px 8px
+    box-shadow: 0 0 10px 1px rgba(0, 0, 0, .1)
+    background-color: #fff
+    border: none
+    transition: box-shadow .15s ease-out
+
+    &:hover
+      box-shadow: 0 0 20px 1px rgba(0, 0, 0, .2)
+
+    &:active
+      box-shadow: 0 0 10px 1px rgba(0, 0, 0, .15)
 
   .calendar__area
     display: flex
@@ -195,7 +200,45 @@ export default {
   .calendar__events-item
     position: absolute
     width: 100%
-    z-index: 1
+    z-index: 0
+    cursor: pointer
+
+    &:hover
+      &:after,
+      &:before
+        opacity: 1
+        visibility: visible
+
+    &:after
+      content: attr(data-title)
+      position: absolute
+      z-index: 1
+      background-color: #6e9ecf
+      border-radius: 3px
+      color: #fff
+      bottom: calc(100% + 10px)
+      left: 60%
+      font-size: 12px
+      padding: 4px 8px
+      width: 120px
+      opacity: 0
+      visibility: hidden
+      transition: opacity .2s ease-out
+
+    &:before
+      content: ''
+      position: absolute
+      z-index: 1
+      width: 12px
+      height: 12px
+      border-radius: 2px
+      transform: rotate(45deg)
+      background-color: #6e9ecf
+      left: 70%
+      bottom: calc(100% + 5px)
+      opacity: 0
+      visibility: hidden
+      transition: opacity .2s ease-out
 
   .calendar__events-item-background
     background-color: #e2ecf5

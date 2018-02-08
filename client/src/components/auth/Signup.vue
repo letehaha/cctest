@@ -20,11 +20,6 @@
               | Пароль:
             input.panel__form-input(name='password', ref='password' type='password', placeholder='Введите ваш пароль', autocomplete='off', required)
 
-          label.panel__form-label
-            span
-              | Подтвердите пароль:
-            input.panel__form-input(name='check_password', type='password', placeholder='Введите ваш пароль', autocomplete='off')
-
           button.panel__form-submit(type='submit')
             | Зарегистрироваться
 
@@ -38,8 +33,8 @@ export default {
   data () {
     return {
       postBody: {
-        name: '',
-        password: ''
+        name: null,
+        password: null
       }
     }
   },

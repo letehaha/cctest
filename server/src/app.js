@@ -13,7 +13,6 @@ var mongoose = require('mongoose');
 // models
 
 User = require('./models/user');
-_Event = require('./models/event');
 
 mongoose.connect(dbConfig.url, {});
 
@@ -28,13 +27,13 @@ mongoose.connection.once('open', function () {
 
 app.use(cors());
 
-app.get('/calendar', (req, res) => {
-  res.send([
-    { id: 0, start: 0, duration: 15, title: 'Lorem ipsum dolor sit amet.' },
-    { id: 1, start: 25, duration: 30, title: 'Lorem, ipsum.' },
-    { id: 2, start: 30, duration: 30, title: 'Lorem ipsum dolor sit.' },
-    { id: 3, start: 40, duration: 30, title: 'Lorem ipsum dolor sit.' }
-  ]);
+app.post('/calendar', (req, res) => {
+  var username = req.body.username;
+  User.findOne({ name: username }, function (err, user) {
+    if (err) console.error(err)
+    if (user)
+      res.send(user.events)
+  })
 });
 
 app.get('/users', (req, res) => {
@@ -50,10 +49,19 @@ app.post('/user', (req, res) => {
   var user = req.body.body;
   User.addUser(user, function (err, user) {
     if (err) {
-      throw err;
+      console.error(err);
     }
     res.json(user);
   });
+});
+
+app.post('/event', (req, res) => {
+  var user = req.body;
+  User.findOneAndUpdate({ name: user.username }, { $push: { events: user.event }}, { new: true }, function (err, user) {
+    if (err) console.error(err)
+    if (user)
+      res.send(user.events)
+  })
 });
 
 app.listen(process.env.PORT || 8081);

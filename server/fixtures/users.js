@@ -10,7 +10,11 @@ var user = {
   name: 'test',
   password: 'test',
   events: [
-    { _id: 0, title: 'Тестовая запись', start: 10, duration: 50 }
+    { start: 0, duration: 100, title: 'Первое' },
+    { start: 25, duration: 50, title: 'Второе' },
+    { start: 30, duration: 30, title: 'Третье' },
+    { start: 270, duration: 35, title: 'Четвертое' },
+    { start: 300, duration: 35, title: 'Пятое' }
   ]
 }
 

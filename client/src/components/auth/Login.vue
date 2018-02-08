@@ -65,7 +65,7 @@ export default {
           }
         })
         .catch(e => {
-          this.errors.push(e)
+          console.error(e)
         })
       event.target.reset()
     },
