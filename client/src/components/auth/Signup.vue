@@ -55,8 +55,7 @@ export default {
           }
           axios.post(`http://localhost:8081/user`, { body: this.postBody })
             .then(response => {
-              this.$store.commit('authorize')
-              this.$store.commit('saveUser', this.postBody.name)
+              this.$store.dispatch('makeUserAuthorized')
               localStorage.setItem('userIsAuthorized', 'true')
               localStorage.setItem('currentUser', this.postBody.name)
               this.$router.push('/')

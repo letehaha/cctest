@@ -56,8 +56,7 @@ export default {
           }
           for (let i = 0; i < response.data.length; i++) {
             if (this.loginInformation.name === response.data[i].name && this.loginInformation.password === response.data[i].password) {
-              this.$store.commit('authorize')
-              this.$store.commit('saveUser', this.loginInformation.name)
+              this.$store.dispatch('makeUserAuthorized')
               localStorage.setItem('userIsAuthorized', 'true')
               localStorage.setItem('currentUser', this.loginInformation.name)
               this.$router.push('/')

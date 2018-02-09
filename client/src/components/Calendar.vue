@@ -110,8 +110,7 @@ export default {
       return value % 2 !== 0
     },
     logout () {
-      this.$store.commit('unauthorize')
-      this.$store.commit('clearUser')
+      this.$store.dispatch('makeUserUnauthorized')
       localStorage.removeItem('userIsAuthorized')
       localStorage.removeItem('currentUser')
       this.$router.push('/login')

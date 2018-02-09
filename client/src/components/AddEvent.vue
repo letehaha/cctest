@@ -8,12 +8,22 @@
     label.panel__form-label
       span
         | Время начала:
-      input.panel__form-input(name='event-start', ref='eventStart', :type="timeSupport ? 'time' : 'text'", placeholder='11:10', required)
+      input.panel__form-input(name='event-start',
+                              ref='eventStart',
+                              :type="timeSupport ? 'time' : 'text'",
+                              placeholder='11:10',
+                              required,
+                              v-bind:class="{ 'invalid': !inputsIsValid.start }")
 
     label.panel__form-label
       span
         | Время окончания:
-      input.panel__form-input(name='event-end', ref='eventEnd', :type="timeSupport ? 'time' : 'text'", placeholder='15:50', required)
+      input.panel__form-input(name='event-end',
+                              ref='eventEnd',
+                              :type="timeSupport ? 'time' : 'text'",
+                              placeholder='15:50',
+                              required,
+                              v-bind:class="{ 'invalid': !inputsIsValid.end }")
 
     button.panel__form-submit(type='submit')
       | Войти
@@ -35,7 +45,12 @@ export default {
           duration: null
         }
       },
-      dayStart: 8 * 60 // 8 hours * 60 minutes
+      dayStart: 8 * 60, // 8 hours * 60 minutes
+      dayEnd: 17 * 60,
+      inputsIsValid: {
+        start: true,
+        end: true
+      }
     }
   },
   computed: {
@@ -52,8 +67,22 @@ export default {
   },
   methods: {
     onSubmit () {
+      if (this.getEventInMinutes(this.$refs.eventStart.value) <= this.dayStart ||
+          this.getEventInMinutes(this.$refs.eventStart.value) >= this.dayEnd) {
+        this.inputsIsValid.start = false
+        return false
+      } else {
+        this.inputsIsValid.start = true
+      }
+      if (this.getEventInMinutes(this.$refs.eventEnd.value) <= this.dayStart ||
+          this.getEventInMinutes(this.$refs.eventEnd.value) >= this.dayEnd) {
+        this.inputsIsValid.end = false
+        return false
+      } else {
+        this.inputsIsValid.end = true
+      }
       this.postBody.username = this.currentUser
-      this.postBody.event.start = this.getEventStartInMinutes(this.$refs.eventStart.value)
+      this.postBody.event.start = this.getEventInMinutes(this.$refs.eventStart.value) - this.dayStart
       this.postBody.event.duration = this.getEventDuration(this.$refs.eventStart.value, this.$refs.eventEnd.value)
       this.postBody.event.title = this.$refs.eventName.value
       if (this.postBody.event.duration > 0) {
@@ -64,23 +93,27 @@ export default {
           .catch(e => {
             console.error(e)
           })
+      } else {
+        console.log('Время старта позже время окончания события!')
       }
     },
     getEventDuration (start, end) {
-      let a = start.split(':')
-      let b = end.split(':')
-      let startMinutes = (+a[0]) * 60 + (+a[1]) - this.dayStart
-      let endMinutes = (+b[0]) * 60 + (+b[1]) - this.dayStart
+      let startMinutes = this.getEventInMinutes(start) - this.dayStart
+      let endMinutes = this.getEventInMinutes(end) - this.dayStart
       return endMinutes - startMinutes
     },
-    getEventStartInMinutes (start) {
-      let array = start.split(':')
-      return (+array[0]) * 60 + (+array[1]) - this.dayStart
+    getEventInMinutes (value) {
+      let array = value.split(':')
+      return (+array[0]) * 60 + (+array[1])
     }
   }
 }
 </script>
 
 <style lang='sass' scoped>
+
+  .panel__form-input
+    &.invalid
+      border-color: red
 
 </style>
