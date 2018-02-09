@@ -6,7 +6,25 @@ import { events } from './modules/events'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {},
+  state: {
+    calendarPopup: false
+  },
+  mutations: {
+    popupIsOpen (state) {
+      state.calendarPopup = true
+    },
+    popupIsClose (state) {
+      state.calendarPopup = false
+    }
+  },
+  actions: {
+    makeCalendarPopupIsOpened ({ commit }) {
+      commit('popupIsOpen')
+    },
+    makeCalendarPopupIsClosed ({ commit }) {
+      commit('popupIsClose')
+    }
+  },
   modules: {
     auth: auth,
     events: events

@@ -1,32 +1,38 @@
 <template lang='pug'>
-  form.event(v-on:submit.prevent='onSubmit')
-    label.panel__form-label
-      span
+  form.event.event--column(v-on:submit.prevent='onSubmit')
+    label.event__label
+      span.event__label-text
         | Название:
-      input.panel__form-input(name='event-name', ref='eventName' type='text', placeholder='Введите название', required)
 
-    label.panel__form-label
-      span
+      input.event__input(name='event-name',
+                        ref='eventName' type='text',
+                        placeholder='Введите название',
+                        required)
+
+    label.event__label
+      span.event__label-text
         | Время начала:
-      input.panel__form-input(name='event-start',
-                              ref='eventStart',
-                              :type="timeSupport ? 'time' : 'text'",
-                              placeholder='11:10',
-                              required,
-                              v-bind:class="{ 'invalid': !inputsIsValid.start }")
 
-    label.panel__form-label
-      span
+      input.event__input(name='event-start',
+                        ref='eventStart',
+                        :type="timeSupport ? 'time' : 'text'",
+                        placeholder='11:10',
+                        required,
+                        v-bind:class="{ 'invalid': !inputsIsValid.start }")
+
+    label.event__label
+      span.event__label-text
         | Время окончания:
-      input.panel__form-input(name='event-end',
-                              ref='eventEnd',
-                              :type="timeSupport ? 'time' : 'text'",
-                              placeholder='15:50',
-                              required,
-                              v-bind:class="{ 'invalid': !inputsIsValid.end }")
 
-    button.panel__form-submit(type='submit')
-      | Войти
+      input.event__input(name='event-end',
+                        ref='eventEnd',
+                        :type="timeSupport ? 'time' : 'text'",
+                        placeholder='15:50',
+                        required,
+                        v-bind:class="{ 'invalid': !inputsIsValid.end }")
+
+    button.event__submit(type='submit')
+      | Добавить
 
 </template>
 
@@ -70,6 +76,7 @@ export default {
       if (this.getEventInMinutes(this.$refs.eventStart.value) <= this.dayStart ||
           this.getEventInMinutes(this.$refs.eventStart.value) >= this.dayEnd) {
         this.inputsIsValid.start = false
+        alert('Время начала события должно быть позже 8 утра и раньше 5 вечера ')
         return false
       } else {
         this.inputsIsValid.start = true
@@ -77,6 +84,7 @@ export default {
       if (this.getEventInMinutes(this.$refs.eventEnd.value) <= this.dayStart ||
           this.getEventInMinutes(this.$refs.eventEnd.value) >= this.dayEnd) {
         this.inputsIsValid.end = false
+        alert('Время начала события должно быть позже 8 утра и раньше 5 вечера ')
         return false
       } else {
         this.inputsIsValid.end = true
@@ -94,8 +102,10 @@ export default {
             console.error(e)
           })
       } else {
-        console.log('Время старта позже время окончания события!')
+        alert('Время старта позже время окончания события!')
       }
+      this.$store.dispatch('makeCalendarPopupIsClosed')
+      event.target.reset()
     },
     getEventDuration (start, end) {
       let startMinutes = this.getEventInMinutes(start) - this.dayStart
@@ -112,8 +122,29 @@ export default {
 
 <style lang='sass' scoped>
 
-  .panel__form-input
+  .event--column
+    display: inline-flex
+    flex-direction: column
+    align-items: center
+
+  .event__label
+    &:not(:last-child)
+      margin-bottom: 16px
+
+  .event__label-text
+    display: block
+    margin-bottom: 8px
+
+  .event__input
+    width: 270px
+    padding: 8px 16px
+
     &.invalid
       border-color: red
+
+  .event__submit
+    @extend %button
+    @extend %button--shadow
+    box-sizing: content-box
 
 </style>

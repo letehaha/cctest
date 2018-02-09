@@ -2,7 +2,6 @@
   section
     .calendar
       .calendar__intro
-        add-event
         .container.calendar__intro-wrapper
           h1.calendar__title
             | Calendar
@@ -17,7 +16,7 @@
       .container
         .calendar__actions
           .calendar__action
-            button.calendar__action-btn.calendar__action-btn-add(type='button', @click='addEvent') Add
+            button.calendar__action-btn.calendar__action-btn-add(type='button', @click='openPopup') Add
 
           .calendar__action
             button.calendar__action-btn.calendar__action-btn-export(type='button') Export
@@ -26,7 +25,7 @@
           .calendar__datetable
             .calendar__datetime(
               v-for='(timeStamp, index) in timeStamps')
-              time.calendar__datetime-value(v-bind:class="{'calendar__datetime-value--small': isOdd(index)}")
+              time.calendar__datetime-value(v-bind:class="{ 'calendar__datetime-value--small': isOdd(index) }")
                 | {{ timeStamp }}
 
           .calendar__events
@@ -43,15 +42,20 @@
               .calendar__events-item-background
                 .calendar__events-item-title {{ event.title }}
 
+    .popup(v-bind:class="{ 'is-open': popupState }")
+      .popup__overlay(@click='closePopup')
+      .popup__content
+        add-event-popup
+
 </template>
 
 <script>
 import axios from 'axios'
-import addEvent from './AddEvent'
+import addEventPopup from './AddEvent'
 
 export default {
   name: 'calendar',
-  components: { addEvent },
+  components: { addEventPopup },
   data () {
     return {
       timeStamps: [],
@@ -68,9 +72,7 @@ export default {
     }
   },
   beforeCreate () {
-    if (!this.$store.state.auth.userIsAuthorized) {
-      this.$router.push('/login')
-    }
+    if (!this.$store.state.auth.userIsAuthorized) this.$router.push('/login')
   },
   mounted () {
     axios.post(`http://localhost:8081/calendar`, { username: this.currentUser })
@@ -83,15 +85,12 @@ export default {
     this.createTimeStamps()
   },
   computed: {
+    popupState: function () { return this.$store.state.calendarPopup },
     fullTime: function () {
       return (this.interval.am.end - this.interval.am.start + this.interval.pm.end) * 60
     },
-    currentUser: function () {
-      return localStorage.getItem('currentUser')
-    },
-    eventsMap: function () {
-      return this.$store.state.events.besideElements
-    }
+    currentUser: function () { return localStorage.getItem('currentUser') },
+    eventsMap: function () { return this.$store.state.events.besideElements }
   },
   methods: {
     createTimeStamps () {
@@ -115,13 +114,29 @@ export default {
       localStorage.removeItem('currentUser')
       this.$router.push('/login')
     },
-    addEvent () {
+    openPopup () {
+      this.$store.dispatch('makeCalendarPopupIsOpened')
+    },
+    closePopup () {
+      this.$store.dispatch('makeCalendarPopupIsClosed')
     }
   }
 }
 </script>
 
 <style lang='sass'>
+  .popup
+    @extend %popup
+    display: none
+
+    &.is-open
+      display: flex
+
+  .popup__content
+    @extend %popup__content
+
+  .popup__overlay
+    @extend %popup__overlay
 
   .calendar__intro
     padding: 20px 0
@@ -148,18 +163,10 @@ export default {
       margin-right: 15px
 
   .calendar__action-btn
+    @extend %button
+    @extend %button--shadow
     width: 70px
     padding: 4px 8px
-    box-shadow: 0 0 10px 1px rgba(0, 0, 0, .1)
-    background-color: #fff
-    border: none
-    transition: box-shadow .15s ease-out
-
-    &:hover
-      box-shadow: 0 0 20px 1px rgba(0, 0, 0, .2)
-
-    &:active
-      box-shadow: 0 0 10px 1px rgba(0, 0, 0, .15)
 
   .calendar__area
     display: flex
