@@ -22,5 +22,7 @@ Now, application is running on ```http://localhost:8080```
 For login in application you can enter a default user data (```login: test, password: test```) or create a new user.
 
 To add a new event you need to click the ```Добавить``` button
+
 To remove an event you need to click on the event in the calendar area
+
 To export all events to JSON you need to click on ```Экспортировать``` button and then copy it by clicking on ```Скопировать```
