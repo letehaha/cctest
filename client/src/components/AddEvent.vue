@@ -94,7 +94,7 @@ export default {
       this.postBody.event.duration = this.getEventDuration(this.$refs.eventStart.value, this.$refs.eventEnd.value)
       this.postBody.event.title = this.$refs.eventName.value
       if (this.postBody.event.duration > 0) {
-        axios.post(`http://localhost:8081/event`, this.postBody)
+        axios.post(`http://localhost:8081/event/add`, this.postBody)
           .then(response => {
             this.$store.dispatch('updateEventsMap', response.data)
           })

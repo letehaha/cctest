@@ -2,31 +2,15 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { auth } from './modules/auth'
 import { events } from './modules/events'
+import { calendarPopup } from './modules/calendarPopup'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {
-    calendarPopup: false
-  },
-  mutations: {
-    popupIsOpen (state) {
-      state.calendarPopup = true
-    },
-    popupIsClose (state) {
-      state.calendarPopup = false
-    }
-  },
-  actions: {
-    makeCalendarPopupIsOpened ({ commit }) {
-      commit('popupIsOpen')
-    },
-    makeCalendarPopupIsClosed ({ commit }) {
-      commit('popupIsClose')
-    }
-  },
+  state: {},
   modules: {
     auth: auth,
-    events: events
+    events: events,
+    calendarPopup: calendarPopup
   }
 })
