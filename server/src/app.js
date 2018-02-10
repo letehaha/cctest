@@ -28,15 +28,22 @@ mongoose.connection.once('open', function () {
 app.use(cors());
 
 app.post('/calendar', (req, res) => {
-  var username = req.body.username;
-  User.findOne({ name: username }, function (err, user) {
+  User.findOne({ name: req.body.username }, function (err, user) {
     if (err) console.error(err)
     if (user)
       res.send(user.events)
   })
 });
 
-app.get('/users', (req, res) => {
+app.post('/calendar/export', (req, res) => {
+  User.findOne({ name: req.body.username }, function (err, user) {
+    if (err) console.error(err)
+    if (user)
+      res.send(user.events.map(event => ({ start: event.start, duration: event.duration, title: event.title })))
+  })
+});
+
+app.get('/user/get', (req, res) => {
   User.getUser(function (err, users) {
     if (err) {
       throw err;
@@ -45,7 +52,7 @@ app.get('/users', (req, res) => {
   });
 });
 
-app.post('/user', (req, res) => {
+app.post('/user/add', (req, res) => {
   var user = req.body.body;
   User.addUser(user, function (err, user) {
     if (err) {

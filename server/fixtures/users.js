@@ -10,11 +10,11 @@ var user = {
   name: 'test',
   password: 'test',
   events: [
-    { start: 0, duration: 100, title: 'Первое' },
-    { start: 25, duration: 50, title: 'Второе' },
-    { start: 30, duration: 30, title: 'Третье' },
-    { start: 270, duration: 35, title: 'Четвертое' },
-    { start: 300, duration: 35, title: 'Пятое' }
+    { start: 0, duration: 100, title: 'Первое событие' },
+    { start: 25, duration: 50, title: 'Второе событие' },
+    { start: 30, duration: 30, title: 'Третье событие' },
+    { start: 270, duration: 35, title: 'Четвертое событие' },
+    { start: 300, duration: 35, title: 'Пятое событие' }
   ]
 }
 

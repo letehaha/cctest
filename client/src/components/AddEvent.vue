@@ -76,7 +76,7 @@ export default {
       if (this.getEventInMinutes(this.$refs.eventStart.value) <= this.dayStart ||
           this.getEventInMinutes(this.$refs.eventStart.value) >= this.dayEnd) {
         this.inputsIsValid.start = false
-        alert('Время начала события должно быть позже 8 утра и раньше 5 вечера ')
+        alert('Время начала события должно быть позже 8 утра и раньше 5 вечера')
         return false
       } else {
         this.inputsIsValid.start = true
@@ -84,7 +84,7 @@ export default {
       if (this.getEventInMinutes(this.$refs.eventEnd.value) <= this.dayStart ||
           this.getEventInMinutes(this.$refs.eventEnd.value) >= this.dayEnd) {
         this.inputsIsValid.end = false
-        alert('Время начала события должно быть позже 8 утра и раньше 5 вечера ')
+        alert('Время окончания события должно быть позже 8 утра и раньше 5 вечера')
         return false
       } else {
         this.inputsIsValid.end = true
