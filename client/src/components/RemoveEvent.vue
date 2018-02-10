@@ -5,10 +5,10 @@
 
     .remove-event__btns
       .remove-event__btn.remove-event__btn-submit(@click='removeEvent')
-        | Remove
+        | Удалить
 
       .remove-event__btn.remove-event__btn-cancel(@click='cancel')
-        | Cancel
+        | Отмена
 
 </template>
 

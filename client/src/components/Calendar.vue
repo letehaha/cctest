@@ -4,7 +4,7 @@
       .calendar__intro
         .container.calendar__intro-wrapper
           h1.calendar__title
-            | Calendar
+            | Календарь
 
           .calendar__profile
             .calendar__user
@@ -16,10 +16,10 @@
       .container
         .calendar__actions
           .calendar__action
-            button.calendar__action-btn.calendar__action-btn-add(type='button', @click='openAddEventPopup') Add
+            button.calendar__action-btn.calendar__action-btn-add(type='button', @click='openAddEventPopup') Добавить
 
           .calendar__action
-            button.calendar__action-btn.calendar__action-btn-export(type='button') Export
+            button.calendar__action-btn.calendar__action-btn-export(type='button') Эксортировать
 
         .calendar__area
           .calendar__datetable
@@ -193,7 +193,6 @@ export default {
   .calendar__action-btn
     @extend %button
     @extend %button--shadow
-    width: 70px
     padding: 4px 8px
 
   .calendar__area
