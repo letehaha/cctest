@@ -8,9 +8,6 @@ import VueFire from 'vuefire'
 
 Vue.use(VueFire)
 
-/* eslint-disable no-unused-vars */
-let bus = new Vue()
-
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
