@@ -27,21 +27,23 @@ mongoose.connection.once('open', function () {
 
 app.use(cors());
 
-app.get('/calendar', (req, res) => {
-  res.send([
-    { id: 0, start: 0, duration: 15, title: 'Lorem ipsum dolor sit amet.', left: '0' }, // full
-    { id: 1, start: 25, duration: 30, title: 'Lorem, ipsum.', left: '1' }, // left
-    { id: 2, start: 30, duration: 30, title: 'Lorem ipsum dolor sit.', left: '2' }, // right
-    { id: 3, start: 60, duration: 15, title: 'Lorem.', left: '0' },
-    { id: 4, start: 100, duration: 15, title: 'Lorem ipsum dolor sit amet, consectetur adipisicing.', left: '0' },
-    { id: 5, start: 180, duration: 90, title: 'Lorem ipsum dolor sit amet, consectetur.', left: '0' },
-    { id: 6, start: 360, duration: 30, title: 'Lorem, ipsum.', left: '1' },
-    { id: 7, start: 370, duration: 45, title: 'Lorem, ipsum.', left: '2' },
-    { id: 8, start: 405, duration: 30, title: 'Lorem ipsum dolor sit.', left: '1' }
-  ]);
+app.post('/calendar', (req, res) => {
+  User.findOne({ name: req.body.username }, function (err, user) {
+    if (err) console.error(err)
+    if (user)
+      res.send(user.events)
+  })
 });
 
-app.get('/users', (req, res) => {
+app.post('/calendar/export', (req, res) => {
+  User.findOne({ name: req.body.username }, function (err, user) {
+    if (err) console.error(err)
+    if (user)
+      res.send(user.events.map(event => ({ start: event.start, duration: event.duration, title: event.title })))
+  })
+});
+
+app.get('/user/get', (req, res) => {
   User.getUser(function (err, users) {
     if (err) {
       throw err;
@@ -50,14 +52,32 @@ app.get('/users', (req, res) => {
   });
 });
 
-app.post('/user', (req, res) => {
+app.post('/user/add', (req, res) => {
   var user = req.body.body;
   User.addUser(user, function (err, user) {
     if (err) {
-      throw err;
+      console.error(err);
     }
     res.json(user);
   });
+});
+
+app.post('/event/add', (req, res) => {
+  var user = req.body;
+  User.findOneAndUpdate({ name: user.username }, { $push: { events: user.event }}, { new: true }, function (err, user) {
+    if (err) console.error(err)
+    if (user)
+      res.send(user.events)
+  })
+});
+
+app.post('/event/remove', (req, res) => {
+  var event = req.body;
+  User.findOneAndUpdate({ name: event.username }, { $pull: { events: { _id: event.removeId } }}, { new: true }, function (err, user) {
+    if (err) console.error(err)
+    if (user)
+      res.send(user.events)
+  })
 });
 
 app.listen(process.env.PORT || 8081);

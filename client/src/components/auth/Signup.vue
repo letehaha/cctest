@@ -20,11 +20,6 @@
               | Пароль:
             input.panel__form-input(name='password', ref='password' type='password', placeholder='Введите ваш пароль', autocomplete='off', required)
 
-          label.panel__form-label
-            span
-              | Подтвердите пароль:
-            input.panel__form-input(name='check_password', type='password', placeholder='Введите ваш пароль', autocomplete='off')
-
           button.panel__form-submit(type='submit')
             | Зарегистрироваться
 
@@ -38,8 +33,8 @@ export default {
   data () {
     return {
       postBody: {
-        name: '',
-        password: ''
+        name: null,
+        password: null
       }
     }
   },
@@ -52,16 +47,15 @@ export default {
     onSubmit () {
       this.postBody.name = this.$refs.name.value
       this.postBody.password = this.$refs.password.value
-      axios.get(`http://localhost:8081/users`)
+      axios.get(`http://localhost:8081/user/get`)
         .then(response => {
           if (this.userExists(response.data, this.postBody.name)) {
             alert('Такой пользователь уже существует! Придумайте другой логин')
             return false
           }
-          axios.post(`http://localhost:8081/user`, { body: this.postBody })
+          axios.post(`http://localhost:8081/user/add`, { body: this.postBody })
             .then(response => {
-              this.$store.commit('authorize')
-              this.$store.commit('saveUser', this.postBody.name)
+              this.$store.dispatch('makeUserAuthorized')
               localStorage.setItem('userIsAuthorized', 'true')
               localStorage.setItem('currentUser', this.postBody.name)
               this.$router.push('/')

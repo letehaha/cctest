@@ -8,8 +8,7 @@ function checkUserIsAuthorized () {
 
 export const auth = {
   state: {
-    userIsAuthorized: checkUserIsAuthorized(),
-    user: ''
+    userIsAuthorized: checkUserIsAuthorized()
   },
   mutations: {
     authorize (state) {
@@ -17,12 +16,14 @@ export const auth = {
     },
     unauthorize (state) {
       state.userIsAuthorized = false
+    }
+  },
+  actions: {
+    makeUserAuthorized ({ commit }) {
+      commit('authorize')
     },
-    saveUser (state, user) {
-      state.user = user
-    },
-    clearUser (state) {
-      state.user = ''
+    makeUserUnauthorized ({ commit }) {
+      commit('unauthorize')
     }
   }
 }
