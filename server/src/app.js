@@ -55,9 +55,18 @@ app.post('/user', (req, res) => {
   });
 });
 
-app.post('/event', (req, res) => {
+app.post('/event/add', (req, res) => {
   var user = req.body;
   User.findOneAndUpdate({ name: user.username }, { $push: { events: user.event }}, { new: true }, function (err, user) {
+    if (err) console.error(err)
+    if (user)
+      res.send(user.events)
+  })
+});
+
+app.post('/event/remove', (req, res) => {
+  var event = req.body;
+  User.findOneAndUpdate({ name: event.username }, { $pull: { events: { _id: event.removeId } }}, { new: true }, function (err, user) {
     if (err) console.error(err)
     if (user)
       res.send(user.events)

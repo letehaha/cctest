@@ -3,13 +3,17 @@ export const events = {
     events: [],
     mutatedEvents: [],
     besideElements: [],
-    relative_value: 48 / 30 // 1.6 px === 1 min
+    relative_value: 48 / 30, // 1.6 px === 1 min
+    eventToRemove: null
   },
   mutations: {
     makeEmpty (state) {
       state.events = []
       state.mutatedEvents = []
       state.besideElements = []
+    },
+    updateEventToRemove (state, value) {
+      state.eventToRemove = value
     },
     updateEvents (state, newValue) {
       state.events = newValue
@@ -29,6 +33,9 @@ export const events = {
     }
   },
   actions: {
+    postEventToRemove ({ commit }, id) {
+      commit('updateEventToRemove', id)
+    },
     updateEventsMap (context, newMap) {
       context.commit('makeEmpty')
       context.commit('updateEvents', newMap)

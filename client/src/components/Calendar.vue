@@ -16,7 +16,7 @@
       .container
         .calendar__actions
           .calendar__action
-            button.calendar__action-btn.calendar__action-btn-add(type='button', @click='openPopup') Add
+            button.calendar__action-btn.calendar__action-btn-add(type='button', @click='openAddEventPopup') Add
 
           .calendar__action
             button.calendar__action-btn.calendar__action-btn-export(type='button') Export
@@ -37,7 +37,8 @@
                 left: event.width * event.position * 100 + '%',
                 width: event.width * 100 + '%'
               }`,
-              :data-title='event.title'
+              :data-title='event.title',
+              @click='removeEvent()'
             )
               .calendar__events-item-background
                 .calendar__events-item-title {{ event.title }}
@@ -45,20 +46,25 @@
     .popup(v-bind:class="{ 'is-open': popupState }")
       .popup__overlay(@click='closePopup')
       .popup__content
-        add-event-popup
+        template(v-if='popups.add')
+          add-event-popup
+        template(v-else-if='popups.remove')
+          remove-event-popup(:event-id="removeEventId")
 
 </template>
 
 <script>
 import axios from 'axios'
 import addEventPopup from './AddEvent'
+import removeEventPopup from './RemoveEvent'
 
 export default {
   name: 'calendar',
-  components: { addEventPopup },
+  components: { addEventPopup, removeEventPopup },
   data () {
     return {
       timeStamps: [],
+      removeEventId: null,
       interval: {
         am: {
           start: 8,
@@ -85,12 +91,13 @@ export default {
     this.createTimeStamps()
   },
   computed: {
-    popupState: function () { return this.$store.state.calendarPopup },
+    popupState: function () { return this.$store.state.calendarPopup.calendarPopup },
     fullTime: function () {
       return (this.interval.am.end - this.interval.am.start + this.interval.pm.end) * 60
     },
     currentUser: function () { return localStorage.getItem('currentUser') },
-    eventsMap: function () { return this.$store.state.events.besideElements }
+    eventsMap: function () { return this.$store.state.events.besideElements },
+    popups: function () { return this.$store.state.calendarPopup.popups }
   },
   methods: {
     createTimeStamps () {
@@ -113,6 +120,27 @@ export default {
       localStorage.removeItem('userIsAuthorized')
       localStorage.removeItem('currentUser')
       this.$router.push('/login')
+    },
+    removeEvent () {
+      let target = event.target
+
+      this.openPopup()
+      this.$store.dispatch('updateRemoveEventPopupState', true)
+      while (true) {
+        if (target.classList.contains('calendar__events-item')) {
+          for (let i = 0; i < target.parentNode.children.length; i++) {
+            if (target === target.parentNode.children[i]) {
+              this.$store.dispatch('postEventToRemove', this.eventsMap[i].id)
+            }
+          }
+          return false
+        }
+        target = target.parentNode
+      }
+    },
+    openAddEventPopup () {
+      this.openPopup()
+      this.$store.dispatch('updateAddEventPopupState', true)
     },
     openPopup () {
       this.$store.dispatch('makeCalendarPopupIsOpened')
