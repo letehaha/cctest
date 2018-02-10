@@ -48,7 +48,7 @@ export default {
     onSubmit () {
       this.loginInformation.name = this.$refs.name.value
       this.loginInformation.password = this.$refs.password.value
-      axios.get(`http://localhost:8081/users`)
+      axios.get(`http://localhost:8081/user/get`)
         .then(response => {
           if (!this.userExists(response.data, this.loginInformation.name)) {
             alert('Такого пользователя не существует!')

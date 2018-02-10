@@ -19,7 +19,7 @@
             button.calendar__action-btn.calendar__action-btn-add(type='button', @click='openAddEventPopup') Добавить
 
           .calendar__action
-            button.calendar__action-btn.calendar__action-btn-export(type='button') Эксортировать
+            button.calendar__action-btn.calendar__action-btn-export(type='button', @click='exportCalendar') Эксортировать
 
         .calendar__area
           .calendar__datetable
@@ -50,6 +50,12 @@
           add-event-popup
         template(v-else-if='popups.remove')
           remove-event-popup(:event-id="removeEventId")
+        template(v-else-if='popups.export')
+          .calendar__export-data
+            textarea.calendar__export-data-field(ref='exportCalendarField')
+            .calendar__export-data-btns
+              button.calendar__export-data-btn(type='button', @click='copyCalendarData')
+                | Скопировать
 
 </template>
 
@@ -142,6 +148,21 @@ export default {
       this.openPopup()
       this.$store.dispatch('updateAddEventPopupState', true)
     },
+    exportCalendar () {
+      this.openPopup()
+      this.$store.dispatch('updateExportCalendarPopupState', true)
+      axios.post(`http://localhost:8081/calendar/export`, { username: this.currentUser })
+        .then(response => {
+          this.$refs.exportCalendarField.value = JSON.stringify(response.data)
+        })
+        .catch(e => {
+          console.error(e)
+        })
+    },
+    copyCalendarData () {
+      this.$refs.exportCalendarField.select()
+      document.execCommand('Copy')
+    },
     openPopup () {
       this.$store.dispatch('makeCalendarPopupIsOpened')
     },
@@ -190,10 +211,16 @@ export default {
     &:not(:last-child)
       margin-right: 15px
 
-  .calendar__action-btn
+  .calendar__action-btn,
+  .calendar__export-data-btn
     @extend %button
     @extend %button--shadow
     padding: 4px 8px
+
+  .calendar__export-data-btns
+    margin-top: 24px
+    display: flex
+    justify-content: flex-end
 
   .calendar__area
     display: flex
@@ -286,5 +313,11 @@ export default {
 
   .calendar__events-item--small
     width: 50%
+
+  .calendar__export-data-field
+    padding: 8px
+    resize: none
+    width: 400px
+    height: 300px
 
 </style>

@@ -3,7 +3,8 @@ export const calendarPopup = {
     calendarPopup: false,
     popups: {
       add: false,
-      remove: false
+      remove: false,
+      export: false
     }
   },
   mutations: {
@@ -18,6 +19,9 @@ export const calendarPopup = {
     },
     updateRemoveEventPopupState (state, boolean) {
       state.popups.remove = boolean
+    },
+    updateExportCalendarPopupState (state, boolean) {
+      state.popups.export = boolean
     }
   },
   actions: {
@@ -28,12 +32,16 @@ export const calendarPopup = {
       commit('popupIsClose')
       commit('updateAddEventPopupState', false)
       commit('updateRemoveEventPopupState', false)
+      commit('updateExportCalendarPopupState', false)
     },
     updateAddEventPopupState ({ commit }, boolean) {
       commit('updateAddEventPopupState', boolean)
     },
     updateRemoveEventPopupState ({ commit }, boolean) {
       commit('updateRemoveEventPopupState', boolean)
+    },
+    updateExportCalendarPopupState ({ commit }, boolean) {
+      commit('updateExportCalendarPopupState', boolean)
     }
   }
 }
