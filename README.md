@@ -1,5 +1,3 @@
-# Code&Care test task
-
 ### How to start
 
 For successful start this project you need to:
@@ -7,7 +5,7 @@ For successful start this project you need to:
 - Install Node.js version 6.10.3 or higher (application was not tested on the versions below)
 - Install MongoDB for your platform [here](https://docs.mongodb.com/manual/administration/install-community/)
 - Open the terminal in the place where you want to download the project and type next commands:
-  - ```git clone https://github.com/letehaha/cctest.git```
+  - ```git clone https://github.com/letehaha/vue-calendar.git```
   - ```npm i``` inside **client** folder
   - ```npm i``` inside **server** folder
 - Open terminal in folder where downloaded MongoDB is located
