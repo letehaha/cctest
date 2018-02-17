@@ -19,7 +19,7 @@
             button.calendar__action-btn.calendar__action-btn-add(type='button', @click='openAddEventPopup') Добавить
 
           .calendar__action
-            button.calendar__action-btn.calendar__action-btn-export(type='button', @click='exportCalendar') Эксортировать
+            button.calendar__action-btn.calendar__action-btn-export(type='button', @click='exportCalendar') Экспортировать
 
         .calendar__area
           .calendar__datetable
